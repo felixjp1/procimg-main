@@ -13,5 +13,5 @@ pip install -r requirements.txt
 2. Ececutar main.py 
 
 ```bash
-pip install -r requirements.txt
+python main.py
 ```
