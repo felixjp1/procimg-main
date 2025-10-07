@@ -113,6 +113,22 @@ add_filter_item("Erosão", lambda: slider_window(root, edited_image_canvas, eros
 add_filter_item("Dilatação", lambda: slider_window(root, edited_image_canvas, dilatation, "Tamanho do kernel", "kernel_size", (1, 15), 5))
 add_filter_item("Abertura (Opening)", lambda: slider_window(root, edited_image_canvas, open, "Tamanho do kernel", "kernel_size", (1, 15), 5))
 add_filter_item("Fechamento (Closing)", lambda: slider_window(root, edited_image_canvas, close, "Tamanho do kernel", "kernel_size", (1, 15), 5))
+add_separator()
+add_filter_item(
+    "Segmentação (K-means → k cores)",
+    lambda: slider_window(
+        root, edited_image_canvas, kmeans_segmentation,
+        "k (nº de clusters)", "k", (2, 8), 3
+    )
+)
+add_filter_item(
+    "Segmentação (K-means → máscara)",
+    lambda: slider_window(
+        root, edited_image_canvas, kmeans_segmentation_mask,
+        "k (nº de clusters)", "k", (2, 8), 3
+    )
+)
+
 
 original_image_canvas = tk.Canvas(root, width=500, height=500, bg="#2e2e2e", highlightthickness=1, highlightbackground="white")
 original_image_canvas.grid(row=0, column=0, padx=20, pady=20)
