@@ -23,7 +23,7 @@ def erosion(img_cv, *args, kernel_size: int = 5, **kwargs):
         return None
     gray_img = cv2.cvtColor(img_cv, cv2.COLOR_BGR2GRAY)
     k = _square_kernel(kernel_size)
-    eroded = cv2.erode(gray_img, k, iterations=1)
+    eroded = cv2.erode(gray_img, k, iterations=2)
     return cv2.cvtColor(eroded, cv2.COLOR_GRAY2BGR)
 
 def dilatation(img_cv, *args, kernel_size: int = 5, **kwargs):
@@ -116,3 +116,28 @@ def _square_kernel(k: int) -> np.ndarray:
     if k % 2 == 0:
         k += 1
     return np.ones((k, k), np.uint8)
+
+
+# kmeans
+def kmeans_segmentation(img_cv, *args, k: int = 3, **kwargs):
+    
+    if img_cv is None:
+        return None
+    Z = img_cv.reshape((-1, 3)).astype(np.float32)  # N x 3 float32
+    criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 20, 1.0)
+    flags = cv2.KMEANS_PP_CENTERS
+    _, labels, centers = cv2.kmeans(Z, int(k), None, criteria, 10, flags)
+    centers = np.uint8(centers)
+    seg = centers[labels.flatten()].reshape(img_cv.shape)
+    return seg  
+
+def kmeans_segmentation_mask(img_cv, *args, k: int = 3, **kwargs):
+    
+    if img_cv is None:
+        return None
+    seg = kmeans_segmentation(img_cv, k=k)
+    if seg is None:
+        return None
+    gray = cv2.cvtColor(seg, cv2.COLOR_BGR2GRAY)
+    _, mask = cv2.threshold(gray, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    return cv2.cvtColor(mask, cv2.COLOR_GRAY2BGR) 
